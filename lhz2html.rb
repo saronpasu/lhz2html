@@ -776,7 +776,7 @@ race.each_pair do |key, value|
   html_data += SKILL_INNER_FOOTER
   html_data += SKILL_BASE_FOOTER
 
-  open(key+".html", "w+"){|f|f.print(html_data)}
+  open(SKILL_BOOK_PATH+"/"+key+".html", "w+"){|f|f.print(html_data)}
 end
 
 # アーキ職
