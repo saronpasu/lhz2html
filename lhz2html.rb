@@ -76,7 +76,7 @@ def get_api(api)
   request = Net::HTTP::Get.new(uri.request_uri)
   request['Accept-Charset'] = 'euc-jp, utf-8'
   request['Accept-Language'] = 'ja, en'
-  request['User-Agent'] = 'lhz2cvs ver-0.0.2'
+  request['User-Agent'] = 'lhz2html ver-0.0.2'
 
   response = Net::HTTP.start(uri.host, uri.port) do |http|
     response = http.request(request)
@@ -414,7 +414,7 @@ ITEM_GROUP = {
   "armour"           => "防具",
   "shield"           => "盾",
   "auxiliary"        => "補助",
-  "storage"          => "収納アイテム",
+  "storage"          => "収納",
   "food"             => "食料",
   "portion"          => "水薬",
   "scroll"           => "巻物",
@@ -434,9 +434,9 @@ target           = "target"
 range            = "range"
 cost             = "cost"
 physical_attack  = "physical_attack"
-magick_attack    = "magick_attack"
+magic_attack     = "magic_attack"
 physical_difense = "physical_difense"
-magick_difense   = "magick_difense"
+magic_difense    = "magic_difense"
 hit              = "hit"
 action           = "action"
 price            = "price"
@@ -483,29 +483,29 @@ ITEM_INNER_HEADER = <<"EOF"
 </dl>
 
 <dl>
-<dt>通常アイテム(防具/盾/補助/収納アイテム)</dt>
+<dt>通常アイテム(防具/盾/補助/収納)</dt>
 <dd>
 <a href="./armour.html">防具</a>
 <a href="./shield.html">盾</a>
-<a href="./axiliary.html">補助</a>
-<a href="./strage.html">収納アイテム</a>
+<a href="./auxiliary.html">補助</a>
+<a href="./storage.html">収納</a>
 </dd>
 </dl>
 
 <dl>
 <dt>通常アイテム(消耗品)</dt>
 <dd>
-<a href="food./.html">食料</a>
-<a href="portion./.html">水薬</a>
-<a href="scroll./.html">巻物</a>
-<a href="jewel./.html">宝珠</a>
+<a href="./food.html">食料</a>
+<a href="./portion.html">水薬</a>
+<a href="./scroll.html">巻物</a>
+<a href="./jewel.html">宝珠</a>
 </dd>
 </dl>
 
 <dl>
 <dt>通常アイテム(その他/サービス)</dt>
 <dd>
-<a href="other./.html">その他</a>
+<a href="./other.html">その他</a>
 <a>サービス</a>
 </dd>
 </dl>
@@ -601,29 +601,29 @@ ITEM_INNER_FOOTER = <<"EOF"
 </dl>
 
 <dl>
-<dt>通常アイテム(防具/盾/補助/収納アイテム)</dt>
+<dt>通常アイテム(防具/盾/補助/収納)</dt>
 <dd>
 <a href="./armour.html">防具</a>
 <a href="./shield.html">盾</a>
-<a href="./axiliary.html">補助</a>
-<a href="./strage.html">収納アイテム</a>
+<a href="./auxiliary.html">補助</a>
+<a href="./storage.html">収納</a>
 </dd>
 </dl>
 
 <dl>
 <dt>通常アイテム(消耗品)</dt>
 <dd>
-<a href="food./.html">食料</a>
-<a href="portion./.html">水薬</a>
-<a href="scroll./.html">巻物</a>
-<a href="jewel./.html">宝珠</a>
+<a href="./food.html">食料</a>
+<a href="./portion.html">水薬</a>
+<a href="./scroll.html">巻物</a>
+<a href="./jewel.html">宝珠</a>
 </dd>
 </dl>
 
 <dl>
 <dt>通常アイテム(その他/サービス)</dt>
 <dd>
-<a href="other./.html">その他</a>
+<a href="./other.html">その他</a>
 <a>サービス</a>
 </dd>
 </dl>
@@ -660,11 +660,11 @@ def item_output(items, html_data)
     html_data += ITEM_TEMPLATE.gsub(
       "physical_attack", physical_attack.to_s
     ).gsub(
-      "magick_attack", magic_attack.to_s
+      "magic_attack", magic_attack.to_s
     ).gsub(
       "physical_defense", physical_defense.to_s
     ).gsub(
-      "magick_defense", magic_defense.to_s
+      "magic_defense", magic_defense.to_s
     ).gsub(
       "hit", hit.to_s
     ).gsub(
@@ -885,12 +885,6 @@ tags = {
   "instrument"       => "楽器",
   "armour"           => "防具",
   "shield"           => "盾",
-  "auxiliary"        => "補助",
-  "storage"          => "収納アイテム",
-  "food"             => "食料",
-  "portion"          => "水薬",
-  "scroll"           => "巻物",
-  "jewel"            => "宝珠"
 }
 
 tags.each_pair do |key, value|
@@ -903,7 +897,10 @@ tags.each_pair do |key, value|
 
   # output data.
   tag_item = item_book["items"].select{
-    |i|i["タグ"].find(value)}
+    |i|i["レシピ"] == nil
+  }.select{
+    |i|i["タグ"].find{|j|j.eql?(value)}
+  }
   html_data = item_output(tag_item, html_data)
 
   html_data += ITEM_INNER_FOOTER
@@ -914,6 +911,12 @@ end
 
 # その他
 type = {
+  "auxiliary"        => "補助",
+  "storage"          => "収納",
+  "food"             => "食料",
+  "portion"          => "水薬",
+  "scroll"           => "巻物",
+  "jewel"            => "宝珠",
   "other"            => "その他"
 }
 
@@ -927,6 +930,8 @@ type.each_pair do |key, value|
 
   # output data.
   other_item = item_book["items"].select{
+    |i|i["レシピ"] == nil
+  }.select{
     |i|i["種別"].eql?(value)}
   html_data = item_output(other_item, html_data)
 
