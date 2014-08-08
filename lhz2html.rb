@@ -8,13 +8,17 @@ include FileUtils
 SKILL_API           = "http://lhrpg.com/lhz/api/skills.json"
 ITEM_API            = "http://lhrpg.com/lhz/api/items.json"
 STYLE_SHEET = <<"EOF"
-/* not print header and footer */
 @media print {
+  /* not print header and footer */
   div.header {
     display: none;
   }
   div.footer {
     display: none;
+  }
+  /* not page break inner data block */
+  div.data {
+    page-break-inside: avoid;
   }
 }
 
@@ -76,7 +80,7 @@ def get_api(api)
   request = Net::HTTP::Get.new(uri.request_uri)
   request['Accept-Charset'] = 'euc-jp, utf-8'
   request['Accept-Language'] = 'ja, en'
-  request['User-Agent'] = 'lhz2html ver-0.0.2'
+  request['User-Agent'] = 'lhz2html ver-0.0.3'
 
   response = Net::HTTP.start(uri.host, uri.port) do |http|
     response = http.request(request)
@@ -128,7 +132,7 @@ SKILL_GROUP = {
   "swashbuckler"     => "メイン職業特技:盗剣士",
   "bard"             => "メイン職業特技:吟遊詩人",
   "sorcerer"         => "メイン職業特技:妖術師",
-  "summoner"         => "メイン職業特技:召喚士",
+  "summoner"         => "メイン職業特技:召喚術師",
   "enchanter"        => "メイン職業特技:付与術師"
 }
 
@@ -205,10 +209,10 @@ SKILL_INNER_HEADER = <<"EOF"
 <a href="./druid.html">森呪遣い</a>
 <a href="./kanagi.html">神祇官</a>
 <a href="./assassin.html">暗殺者</a>
-<a href="./swashbuckler">盗剣士</a>
+<a href="./swashbuckler.html">盗剣士</a>
 <a href="./bard.html">吟遊詩人</a>
 <a href="./sorcerer.html">妖術師</a>
-<a href="./summoner.html">召喚士</a>
+<a href="./summoner.html">召喚術師</a>
 <a href="./enchanter.html">付与術師</a>
 </dd>
 </dl>
@@ -315,10 +319,10 @@ SKILL_INNER_FOOTER = <<"EOF"
 <a href="./druid.html">森呪遣い</a>
 <a href="./kanagi.html">神祇官</a>
 <a href="./assassin.html">暗殺者</a>
-<a href="./swashbuckler">盗剣士</a>
+<a href="./swashbuckler.html">盗剣士</a>
 <a href="./bard.html">吟遊詩人</a>
 <a href="./sorcerer.html">妖術師</a>
-<a href="./summoner.html">召喚士</a>
+<a href="./summoner.html">召喚術師</a>
 <a href="./enchanter.html">付与術師</a>
 </dd>
 </dl>
@@ -818,7 +822,7 @@ main = {
   "swashbuckler"     => "メイン職業特技:盗剣士",
   "bard"             => "メイン職業特技:吟遊詩人",
   "sorcerer"         => "メイン職業特技:妖術師",
-  "summoner"         => "メイン職業特技:召喚士",
+  "summoner"         => "メイン職業特技:召喚術師",
   "enchanter"        => "メイン職業特技:付与術師"
 }
 
@@ -883,7 +887,6 @@ tags = {
   "throwing"         => "投擲",
   "bow"              => "弓",
   "instrument"       => "楽器",
-  "armour"           => "防具",
   "shield"           => "盾",
 }
 
@@ -911,6 +914,7 @@ end
 
 # その他
 type = {
+  "armour"           => "防具",
   "auxiliary"        => "補助",
   "storage"          => "収納",
   "food"             => "食料",
