@@ -501,6 +501,8 @@ ITEM_INNER_HEADER = <<"EOF"
 <dd>
 <a href="./food.html">食料</a>
 <a href="./portion.html">水薬</a>
+<a href="./poison.html">呪薬</a>
+<a href="./card.html">霊符</a>
 <a href="./scroll.html">巻物</a>
 <a href="./jewel.html">宝珠</a>
 </dd>
@@ -619,6 +621,8 @@ ITEM_INNER_FOOTER = <<"EOF"
 <dd>
 <a href="./food.html">食料</a>
 <a href="./portion.html">水薬</a>
+<a href="./poison.html">呪薬</a>
+<a href="./card.html">霊符</a>
 <a href="./scroll.html">巻物</a>
 <a href="./jewel.html">宝珠</a>
 </dd>
@@ -919,6 +923,8 @@ type = {
   "storage"          => "収納",
   "food"             => "食料",
   "portion"          => "水薬",
+  "poison"           => "呪薬",
+  "card"             => "霊符",
   "scroll"           => "巻物",
   "jewel"            => "宝珠",
   "other"            => "その他"
